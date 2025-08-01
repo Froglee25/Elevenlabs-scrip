@@ -1,0 +1,9 @@
+# Môi trường ảo của Python
+venv/
+__pycache__/
+
+# File chứa biến môi trường và thông tin nhạy cảm
+.env
+
+# Các file hệ thống
+.DS_Store
