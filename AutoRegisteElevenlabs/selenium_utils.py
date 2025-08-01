@@ -8,6 +8,9 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, NoSuchElementException, WebDriverException
 import os
 
+# Thêm thư viện này để hỗ trợ màn hình ảo trên Colab
+from pyvirtualdisplay import Display
+
 def human_typing(element, text, delay_range=(0.05, 0.15)):
     """
     Gõ từng ký tự vào một trường input với độ trễ ngẫu nhiên để mô phỏng hành vi của con người.
@@ -44,6 +47,34 @@ def initialize_undetected_chromedriver(proxy_address=None, proxy_username=None, 
     
     driver = uc.Chrome(options=options)
     return driver
+
+# THÊM HÀM MỚI CHO COLAB
+def initialize_undetected_chromedriver_colab(proxy_address=None, proxy_username=None, proxy_password=None):
+    """
+    Khởi tạo undetected_chromedriver được TỐI ƯU cho môi trường Google Colab.
+    """
+    print("Đang khởi tạo màn hình ảo cho Colab...")
+    display = Display(visible=0, size=(1920, 1080))
+    display.start()
+    print("Màn hình ảo đã sẵn sàng.")
+
+    options = uc.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+
+    print("Đang khởi tạo undetected_chromedriver...")
+    
+    # === DÒNG SỬA LỖI: Chỉ định đường dẫn của Chrome đã cài đặt ===
+    driver = uc.Chrome(
+        options=options,
+        browser_executable_path="/usr/bin/google-chrome"
+    )
+    # ==============================================================
+    
+    print("✅ Trình duyệt đã được khởi tạo thành công trên Colab!")
+    return driver
+
 
 def safe_click(driver: SeleniumWebDriver, by: By, value: str, timeout: int = 10, retry_attempts: int = 3, delay_between_retries: float = 1.0):
     """
@@ -105,4 +136,3 @@ def take_screenshot(driver: SeleniumWebDriver, filename: str = "error_screenshot
         print(f"Đã chụp ảnh màn hình: {filepath}")
     except Exception as e:
         print(f"Lỗi khi chụp ảnh màn hình: {e}")
-
