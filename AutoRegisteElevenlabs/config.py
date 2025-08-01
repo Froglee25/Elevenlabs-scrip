@@ -1,7 +1,7 @@
 # FILE: config.py
 import os
 import logging
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # Tải các biến từ file .env vào môi trường của chương trình
 # Thao tác này cần được thực hiện trước khi truy cập các biến
