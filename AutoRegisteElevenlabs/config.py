@@ -1,22 +1,32 @@
 # FILE: config.py
 import os
 import logging
-#from dotenv import load_dotenv
-
-# Tải các biến từ file .env vào môi trường của chương trình
-# Thao tác này cần được thực hiện trước khi truy cập các biến
-load_dotenv()
 
 # ==============================================================================
-# CREDENTIALS & SENSITIVE DATA (Đọc từ biến môi trường)
+# CREDENTIALS & SENSITIVE DATA (Tự động nhận diện môi trường)
 # ==============================================================================
-DEFAULT_PASSWORD = os.getenv("DEFAULT_PASSWORD")
-TEMP_MAIL_API_TOKEN = os.getenv("TEMP_MAIL_API_TOKEN")
+DEFAULT_PASSWORD = None
+TEMP_MAIL_API_TOKEN = None
 
-# Thêm một bước kiểm tra an toàn để đảm bảo các biến đã tồn tại
+# Cố gắng import thư viện của Colab để kiểm tra môi trường
+try:
+    # Nếu dòng này chạy được, nghĩa là ta đang ở trên Colab
+    from google.colab import userdata
+    print("✅ Môi trường Colab được phát hiện. Đang đọc secrets từ userdata...")
+    DEFAULT_PASSWORD = userdata.get('DEFAULT_PASSWORD')
+    TEMP_MAIL_API_TOKEN = userdata.get('TEMP_MAIL_API_TOKEN')
+
+except ImportError:
+    # Nếu không import được, nghĩa là ta đang ở máy local
+    print("✅ Môi trường Local được phát hiện. Đang đọc secrets từ file .env...")
+    from dotenv import load_dotenv
+    load_dotenv() # Tải file .env
+    DEFAULT_PASSWORD = os.getenv("DEFAULT_PASSWORD")
+    TEMP_MAIL_API_TOKEN = os.getenv("TEMP_MAIL_API_TOKEN")
+
+# Bước kiểm tra an toàn cuối cùng
 if not DEFAULT_PASSWORD or not TEMP_MAIL_API_TOKEN:
-    # Dừng chương trình nếu không tìm thấy thông tin nhạy cảm
-    raise ValueError("LỖI: Không tìm thấy DEFAULT_PASSWORD hoặc TEMP_MAIL_API_TOKEN. Hãy chắc chắn bạn đã tạo file .env và điền đủ thông tin.")
+    raise ValueError("LỖI: Không thể tải được credentials. Vui lòng kiểm tra lại Colab Secrets hoặc file .env của bạn.")
 
 # ==============================================================================
 # FILE & DIRECTORY PATHS
