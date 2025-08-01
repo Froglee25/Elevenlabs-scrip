@@ -1,13 +1,22 @@
 # FILE: config.py
-import os # Import thư viện os
-import logging # Import thư viện logging
+import os
+import logging
+from dotenv import load_dotenv
+
+# Tải các biến từ file .env vào môi trường của chương trình
+# Thao tác này cần được thực hiện trước khi truy cập các biến
+load_dotenv()
 
 # ==============================================================================
-# CREDENTIALS & SENSITIVE DATA
+# CREDENTIALS & SENSITIVE DATA (Đọc từ biến môi trường)
 # ==============================================================================
-DEFAULT_PASSWORD = "Benblart@020501"
-TEMP_MAIL_API_TOKEN = "5219|jcFuZ3Oha439Pj2A6MYdQf8NZftUXvB35LVUghZyec0bc88f" # <-- DÁN TOKEN CỦA BẠN VÀO ĐÂY
+DEFAULT_PASSWORD = os.getenv("DEFAULT_PASSWORD")
+TEMP_MAIL_API_TOKEN = os.getenv("TEMP_MAIL_API_TOKEN")
 
+# Thêm một bước kiểm tra an toàn để đảm bảo các biến đã tồn tại
+if not DEFAULT_PASSWORD or not TEMP_MAIL_API_TOKEN:
+    # Dừng chương trình nếu không tìm thấy thông tin nhạy cảm
+    raise ValueError("LỖI: Không tìm thấy DEFAULT_PASSWORD hoặc TEMP_MAIL_API_TOKEN. Hãy chắc chắn bạn đã tạo file .env và điền đủ thông tin.")
 
 # ==============================================================================
 # FILE & DIRECTORY PATHS
@@ -33,7 +42,7 @@ FAILED_API_KEY_ACCOUNTS_FILE = os.path.join(DATA_DIR, "elevenlabs_api_keys_faile
 # SELENIUM & SCRIPT SETTINGS
 # ==============================================================================
 # Số lượng trình duyệt tối đa chạy song song
-MAX_CONCURRENT_WORKERS = 1 
+MAX_CONCURRENT_WORKERS = 1
 
 # Thời gian chờ mặc định cho các element xuất hiện (giây)
 DEFAULT_WAIT_TIMEOUT = 20
@@ -57,7 +66,7 @@ PAGE_LOAD_DELAY = 7
 # ONBOARDING DATA
 # ==============================================================================
 FIRST_NAMES = [
-    "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Heidi", 
+    "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Heidi",
     "Ivan", "Judy", "Kevin", "Linda", "Mike", "Nancy", "Oscar", "Peggy"
 ]
 
@@ -84,7 +93,7 @@ SELECTORS = {
     # === General & Pop-ups ===
     "continue_button": '//button[contains(., "Continue")]',
     "skip_button": '//button[contains(., "Skip")]',
-    
+
     # === Onboarding Pages ===
     "onboarding_style_title": '//h1[normalize-space()="Choose your style"]',
     "personalization_title": '//h5[normalize-space()="Help us personalize your experience"]',
@@ -97,7 +106,7 @@ SELECTORS = {
     "choose_platform_title": '//h1[normalize-space()="Choose your platform"]',
     "what_to_do_title": '//h5[normalize-space()="What would you like to do with ElevenLabs?"]',
     "do_more_title": '//*[@id="app-root"]/div[2]/div/div[3]/div/div/div/div[1]/div[1]/h5',
-    
+
     # === API Key Handling ===
     "create_api_key_button": '//button[contains(., "Create API Key")]', # Nút để bắt đầu tạo key
     "api_key_name_input": '//div[@role="dialog"]//input[@name="name"]',
